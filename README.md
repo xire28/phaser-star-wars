@@ -2,7 +2,10 @@
 Simple star wars game with phaser and ES6
 
 ## How to play
+### Online
+- Browse `http://xire28.github.io/phaser-star-wars`
 
+### Offline
 - Run `php -S localhost:80` in `/public`
 - Browse `localhost`
 
