@@ -3,7 +3,7 @@ Simple star wars game with phaser and ES6
 
 # How to play
 
-- Run `php -S localhost` in `/public`
+- Run `php -S localhost:80` in `/public`
 - Browse `localhost`
 
 # How to setup development env
