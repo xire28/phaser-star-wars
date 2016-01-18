@@ -19,11 +19,11 @@ export default class Intro {
 				speed: 10
 			},
 			intro: {
-				content: "La République Galactique est en pleine ébullition. La taxation des routes commerciales reliant les systèmes éloignés provoque la discorde.\n" +
-					"\n" +
-				"Pour régler la question, la cupide Fédération du Commerce et ses redoutables vaisseaux de guerre imposent un blocus à la petite planète Naboo.\n" +
-				"\n" +
-				"le Chancelier Suprême charge en secret deux Chevaliers Jedi, gardiens de la paix et de la justice dans la galaxie, de résoudre le conflit...",
+				content: 	"La République Galactique est en pleine ébullition. La taxation des routes commerciales reliant les systèmes éloignés provoque la discorde.\n" +
+							"\n" +
+							"Pour régler la question, la cupide Fédération du Commerce et ses redoutables vaisseaux de guerre imposent un blocus à la petite planète Naboo.\n" +
+							"\n" +
+							"le Chancelier Suprême charge en secret deux Chevaliers Jedi, gardiens de la paix et de la justice dans la galaxie, de résoudre le conflit...",
 				durationPerLine: 200
 			},
 			continue: {
@@ -37,21 +37,26 @@ export default class Intro {
 		this.stars = [];
 		this.points = [];
 		this.currentSentenceIndex = 0;
-
 		this.warpMode = false;
 	}
 
 	create() {
 		this.game.stage.backgroundColor = 0x272822;
 
+		//Create textures
 		this.starsTexture = this.game.add.renderTexture(this.game.world.width, this.game.world.height, 'texture');
 		this.starTexture = this.game.make.sprite(0, 0, 'tinystar');
-		this.sfx = this.game.add.audio('main-title');
 
+		// Start sound
+		this.sfx = this.game.add.audio('main-title');
 		this.sfx.play();
 
+		// Generate points for star locations
 		this.generatePoints();
+
+		// Add sprites and texts
 		this.game.add.sprite(0, 0, this.starsTexture);
+
 		this.introText = this.game.add.bitmapText(
 			this.game.world.width / 2 - this.config.font.width * this.sentences[0].length,
 			this.game.world.height / 2 - this.config.font.size * this.sentences.length,
@@ -59,7 +64,6 @@ export default class Intro {
 			'',
 			this.config.font.size
 		);
-
 		this.startText = this.game.add.bitmapText(
 			this.game.world.width / 2 - this.config.font.width * this.config.continue.content.length,
 			this.game.world.height / 2 + this.config.font.size * this.sentences.length,
@@ -67,17 +71,23 @@ export default class Intro {
 			this.config.continue.content,
 			this.config.font.size
 		);
-		this.startText.alpha = 0;
 
-		this.game.time.events.repeat(Phaser.Timer.SECOND, this.config.intro.durationPerLine, this.addNextSentence, this);
+		// Blinking text
+		this.startText.alpha = 0;
 		this.game.add.tween(this.startText).to({alpha: 1}, this.config.continue.duration, Phaser.Easing.Quadratic.InOut, true, this.config.continue.delay);
+
+		// Display intro text, one line at a time
+		this.game.time.events.repeat(Phaser.Timer.SECOND, this.config.intro.durationPerLine, this.addNextSentence, this);
+
+		// Wrap mode for stars
 		this.game.time.events.add(this.config.continue.delay, this.enableWarpMode, this);
+
+		// Register key listeners
 		this.game.input.keyboard.onDownCallback = this.enterPlay.bind(this);
-		this.game.scale.fullScreenScaleMode = Phaser.ScaleManager.EXACT_FIT;
-		this.game.input.onDown.add(this.fullscreen, this);
+		this.game.input.onDown.add(this.toggleFullscreen, this);
 	}
 
-	fullscreen() {
+	toggleFullscreen() {
 		this.game.scale.isFullScreen? this.game.scale.stopFullScreen() : this.game.scale.startFullScreen(false)
 	}
 
@@ -89,7 +99,6 @@ export default class Intro {
 	}
 
 	enterPlay(){
-		this.game.input.keyboard.onDownCallback = null;
 		this.game.state.start('play')
 	}
 
@@ -127,14 +136,11 @@ export default class Intro {
 	}
 
 	update() {
-		if(this.warpMode) {
-			this.drawStars();
-		} else {
-			this.redrawStars()
-		}
+		this.warpMode? this.drawStars() : this.redrawStars()
 	}
 
 	shutdown() {
+		this.game.input.keyboard.onDownCallback = null;
 		this.sfx.destroy()
 	}
 }

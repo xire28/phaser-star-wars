@@ -4,8 +4,6 @@ var connect = require('gulp-connect');
 var babelify = require('babelify');
 var browserify = require('browserify');
 var source = require('vinyl-source-stream');
-var regenerator = require('gulp-regenerator');
-var buffer = require('vinyl-buffer');
 
 function handleError(err) {
 	console.dir(err);
